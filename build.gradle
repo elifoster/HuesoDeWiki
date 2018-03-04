@@ -28,6 +28,22 @@ minecraft {
     mappings = project.mappingsVersion
 }
 
+repositories {
+    maven {
+        name = "progwml6"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        name = "modmaven (fallback)"
+        url = "modmaven.k-4u.nl"
+    }
+}
+
+dependencies {
+    def jei = "mezz.jei:jei_${jeiVersion}"
+    deobfProvided "${jei}:api"
+    runtime jei
+}
 
 processResources {
     inputs.property "version", project.version
