@@ -6,11 +6,11 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'forge'
 
 version = newHuesoDeWiki
 group = "xbony2.huesodewiki"
@@ -24,8 +24,6 @@ compileJava {
 minecraft {
     version = project.forgeVersion
     runDir = "run"
-
-    mappings = project.mappingsVersion
 }
 
 
@@ -42,4 +40,8 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.7"
 }
