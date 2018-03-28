@@ -75,7 +75,7 @@ public class HuesoDeWiki {
 					if(!isCopyPageKeyDown){
 						isCopyPageKeyDown = true;
 						ItemStack itemstack = Utils.getHoveredItemStack();
-						if(!itemstack.isEmpty()){
+						if(itemstack != null){
 							if(GuiScreen.isCtrlKeyDown()){
 								Utils.copyString(RecipeCreator.createRecipes(itemstack));
 								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentTranslation("msg.copiedrecipe", itemstack.getDisplayName()));
@@ -93,7 +93,7 @@ public class HuesoDeWiki {
 					if(!isCopyNameKeyDown){
 						isCopyNameKeyDown = true;
 						ItemStack itemstack = Utils.getHoveredItemStack();
-						if(!itemstack.isEmpty())
+						if(itemstack != null)
 							Utils.copyString(itemstack.getDisplayName());
 					}
 				}else

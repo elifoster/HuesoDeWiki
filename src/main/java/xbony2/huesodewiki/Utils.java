@@ -134,7 +134,6 @@ public class Utils {
 	 * 		   are not hovering over a slot or they are hovering over a slot in a non-supported Gui, returns an
 	 * 		   empty ItemStack.
 	 */
-	@Nonnull
 	public static ItemStack getHoveredItemStack(){
 		GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
 		if(currentScreen instanceof GuiContainer){
@@ -142,7 +141,7 @@ public class Utils {
 			if(hovered != null)
 				return hovered.getStack();
 		}
-		return ItemStack.EMPTY;
+		return null;
 	}
 
 	/**
