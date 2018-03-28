@@ -7,6 +7,7 @@ import java.util.List;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
+import cpw.mods.fml.common.registry.GameData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -14,12 +15,18 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class Utils {
 	public static String getModName(ItemStack itemstack){
-		ModContainer container = Loader.instance().getIndexedModList().get(itemstack.getItem().getCreatorModId(itemstack));
+		String name = GameData.getItemRegistry().getNameForObject(itemstack.getItem());
+		ModContainer container = null;
+		for(ModContainer mod : Loader.instance().getModList()){
+			if (name.equalsIgnoreCase(mod.getModId())){
+				container = mod;
+				break;
+			}
+		}
 		
 		if(container == null)
 			return "Vanilla";
@@ -52,7 +59,7 @@ public class Utils {
 	}
 	
 	public static String outputItemOutput(ItemStack itemstack){
-		return "{{Gc|mod=" + getModAbbrevation(itemstack) + "|link=none|" + itemstack.getDisplayName() + (itemstack.getCount() != 1 ? "|" + itemstack.getCount() : "") + "}}";
+		return "{{Gc|mod=" + getModAbbrevation(itemstack) + "|link=none|" + itemstack.getDisplayName() + (itemstack.stackSize != 1 ? "|" + itemstack.stackSize : "") + "}}";
 	}
 	
 	/**
@@ -131,15 +138,23 @@ public class Utils {
 
 	/**
 	 * @return The ItemStack that the player is currently hovering over. If they are hovering over an empty slot,
-	 * 		   are not hovering over a slot or they are hovering over a slot in a non-supported Gui, returns an
-	 * 		   empty ItemStack.
+	 * 		   are not hovering over a slot or they are hovering over a slot in a non-supported Gui, returns null.
 	 */
 	public static ItemStack getHoveredItemStack(){
 		GuiScreen currentScreen = Minecraft.getMinecraft().currentScreen;
 		if(currentScreen instanceof GuiContainer){
-			Slot hovered = ((GuiContainer)currentScreen).getSlotUnderMouse();
-			if(hovered != null)
-				return hovered.getStack();
+			Field hoveredSlotField = getField(GuiContainer.class, "theSlot", "field_147006_u");
+			if (hoveredSlotField != null){
+				hoveredSlotField.setAccessible(true);
+				try{
+					Slot hovered = (Slot)hoveredSlotField.get(currentScreen);
+					if(hovered != null)
+						return hovered.getStack();
+				}catch(IllegalAccessException e){
+					e.printStackTrace();
+					return null;
+				}
+			}
 		}
 		return null;
 	}
