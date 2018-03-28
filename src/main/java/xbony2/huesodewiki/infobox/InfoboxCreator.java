@@ -8,7 +8,6 @@ import com.google.common.collect.Multimap;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
@@ -35,7 +34,7 @@ public class InfoboxCreator {
 			String ret;
 			
 			try{
-				ret = Utils.floatToString(((ItemBlock)itemstack.getItem()).getBlock().getExplosionResistance(null) * 5); //Minecraft is weird with it, don't ask
+				ret = Utils.floatToString(((ItemBlock)itemstack.getItem()).field_150939_a.getExplosionResistance(null) * 5); //Minecraft is weird with it, don't ask
 			}catch(Exception e){ //In case of a null pointer
 				ret = "?";
 			}
@@ -47,7 +46,8 @@ public class InfoboxCreator {
 			String ret;
 			
 			try{
-				ret = Utils.floatToString(((ItemBlock)itemstack.getItem()).getBlock().getBlockHardness(null, null, null));
+				// No position, not sure what to put in place of a null BlockPos.
+				ret = Utils.floatToString(((ItemBlock)itemstack.getItem()).field_150939_a.getBlockHardness(null, 0, 0, 0));
 			}catch(Exception e){ //In case of a null pointer
 				ret = "?";
 			}
@@ -55,11 +55,11 @@ public class InfoboxCreator {
 			return ret;
 		}, ItemBlock.class));
 		
-		parameters.add(new BasicInstanceOfParameter("foodpoints", (itemstack) -> Integer.toString(((ItemFood)itemstack.getItem()).getHealAmount(itemstack)), ItemFood.class));
-		parameters.add(new BasicInstanceOfParameter("saturation", (itemstack) -> Utils.floatToString(((ItemFood)itemstack.getItem()).getSaturationModifier(itemstack) * ((ItemFood)itemstack.getItem()).getHealAmount(itemstack)), ItemFood.class));
+		parameters.add(new BasicInstanceOfParameter("foodpoints", (itemstack) -> Integer.toString(((ItemFood)itemstack.getItem()).func_150905_g(itemstack)), ItemFood.class));
+		parameters.add(new BasicInstanceOfParameter("saturation", (itemstack) -> Utils.floatToString(((ItemFood)itemstack.getItem()).func_150906_h(itemstack) * ((ItemFood)itemstack.getItem()).func_150905_g(itemstack)), ItemFood.class));
 		parameters.add(new BasicInstanceOfParameter("hunger", (itemstack) -> {
 			ItemFood food = (ItemFood)itemstack.getItem();
-			return "{{Shanks|" + Integer.toString(food.getHealAmount(itemstack)) + "|" + Utils.floatToString(food.getSaturationModifier(itemstack)) + "}}";
+			return "{{Shanks|" + Integer.toString(food.func_150905_g(itemstack)) + "|" + Utils.floatToString(food.func_150906_h(itemstack)) + "}}";
 		}, ItemFood.class));
 		
 		parameters.add(new EffectsParameter());
@@ -78,10 +78,10 @@ public class InfoboxCreator {
 					e.printStackTrace();
 				}
 			}else if(item instanceof ItemSword){
-				Multimap<String, AttributeModifier> multimap = ((ItemSword)item).getItemAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+				Multimap<String, AttributeModifier> multimap = ((ItemSword)item).getItemAttributeModifiers();
 				float damage = 1.0f; //default
 				for(String name : multimap.keySet())
-					if(name == SharedMonsterAttributes.ATTACK_DAMAGE.getName())
+					if(name == SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName())
 						for(AttributeModifier modifier : multimap.get(name))
 							damage += modifier.getAmount();
 				return Utils.floatToString(damage);
@@ -101,10 +101,10 @@ public class InfoboxCreator {
 					e.printStackTrace();
 				}
 			}else if(item instanceof ItemSword){
-				Multimap<String, AttributeModifier> multimap = ((ItemSword)item).getItemAttributeModifiers(EntityEquipmentSlot.MAINHAND);
+				Multimap<String, AttributeModifier> multimap = ((ItemSword)item).getItemAttributeModifiers();
 				float speed = 4.0f; //default
 				for(String name : multimap.keySet())
-					if(name == SharedMonsterAttributes.ATTACK_SPEED.getName())
+					if(name == SharedMonsterAttributes.movementSpeed.getAttributeUnlocalizedName())
 						for(AttributeModifier modifier : multimap.get(name))
 							speed += modifier.getAmount();
 				
