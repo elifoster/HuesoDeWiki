@@ -1,6 +1,6 @@
 package xbony2.huesodewiki.compat;
 
-import net.minecraftforge.fml.common.Loader;
+import cpw.mods.fml.common.Loader;
 
 public class Compat {
 	public static void preInit(){

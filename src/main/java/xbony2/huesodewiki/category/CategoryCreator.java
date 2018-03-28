@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;

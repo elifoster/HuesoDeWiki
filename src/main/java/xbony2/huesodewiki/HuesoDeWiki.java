@@ -4,26 +4,24 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraft.util.ChatComponentTranslation;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import xbony2.huesodewiki.compat.Compat;
 import xbony2.huesodewiki.recipe.RecipeCreator;
 
-@Mod(modid = HuesoDeWiki.MODID, version = HuesoDeWiki.VERSION, clientSideOnly = true)
+@Mod(modid = HuesoDeWiki.MODID, version = HuesoDeWiki.VERSION)
 public class HuesoDeWiki {
 	public static final String MODID = "huesodewiki";
 	public static final String VERSION = "1.3.4a";
@@ -43,7 +41,7 @@ public class HuesoDeWiki {
 	public static final String[] DEFAULT_NAME_CORRECTIONS = new String[]{"Iron Chest", "Iron Chests", "Minecraft", "Vanilla", "Thermal Expansion", "Thermal Expansion 5", "Pressurized Defense", "Pressurized Defence"};
 	public static final String[] DEFAULT_LINK_CORRECTIONS = new String[]{"Esteemed Innovation", "Esteemed Innovation (mod)"};
 
-	@EventHandler
+	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		copyPageKey = new KeyBinding("key.copybasepage", Keyboard.KEY_SEMICOLON, "key.categories.huesodewiki");
 		ClientRegistry.registerKeyBinding(copyPageKey);
@@ -71,8 +69,8 @@ public class HuesoDeWiki {
 	
 	private class RenderTickEventEventHanlder {
 		@SubscribeEvent
-		public void renderTickEvent(RenderTickEvent event){
-			if(event.phase == Phase.START){
+		public void renderTickEvent(TickEvent.RenderTickEvent event){
+			if(event.phase == TickEvent.Phase.START){
 				if(Keyboard.isKeyDown(copyPageKey.getKeyCode())){
 					if(!isCopyPageKeyDown){
 						isCopyPageKeyDown = true;
@@ -80,10 +78,10 @@ public class HuesoDeWiki {
 						if(!itemstack.isEmpty()){
 							if(GuiScreen.isCtrlKeyDown()){
 								Utils.copyString(RecipeCreator.createRecipes(itemstack));
-								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("msg.copiedrecipe", itemstack.getDisplayName()));
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentTranslation("msg.copiedrecipe", itemstack.getDisplayName()));
 							}else{
 								Utils.copyString(PageCreator.createPage(itemstack));
-								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentTranslation("msg.copiedpage", itemstack.getDisplayName()));
+								Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentTranslation("msg.copiedpage", itemstack.getDisplayName()));
 							}
 						}else
 							return;

@@ -30,7 +30,6 @@ public class InfoboxCreator {
 		parameters.add(new ModParameter());
 		parameters.add(new TypeParameter());
 		parameters.add(new OreDictNameParameter());
-		//parameters.add(new RegistryNameParameter());
 		//parameters.add(new UnlocalizedNameParameter()); // Disabled until issue resolved
 		parameters.add(new BasicInstanceOfParameter("blastresistance", (itemstack) -> {
 			String ret;
