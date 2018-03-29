@@ -62,7 +62,6 @@ public class InfoboxCreator {
 			return "{{Shanks|" + Integer.toString(food.func_150905_g(itemstack)) + "|" + Utils.floatToString(food.func_150906_h(itemstack)) + "}}";
 		}, ItemFood.class));
 		
-		parameters.add(new EffectsParameter());
 		parameters.add(new BasicInstanceOfParameter("armorrating", (itemstack) -> Integer.toString(((ItemArmor)itemstack.getItem()).damageReduceAmount), ItemArmor.class));
 		parameters.add(new ToughnessParameter());
 		parameters.add(new BasicInstanceOfParameter("damage", (itemstack) -> {
