@@ -63,7 +63,6 @@ public class InfoboxCreator {
 		}, ItemFood.class));
 		
 		parameters.add(new BasicInstanceOfParameter("armorrating", (itemstack) -> Integer.toString(((ItemArmor)itemstack.getItem()).damageReduceAmount), ItemArmor.class));
-		parameters.add(new ToughnessParameter());
 		parameters.add(new BasicInstanceOfParameter("damage", (itemstack) -> {
 			Item item = itemstack.getItem();
 			if(item instanceof ItemTool){
