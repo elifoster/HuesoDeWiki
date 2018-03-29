@@ -6,12 +6,11 @@ import net.minecraft.item.ItemStack;
 import xbony2.huesodewiki.api.infobox.IInfoboxParameter;
 
 public class LuminanceParameter implements IInfoboxParameter {
-
 	@Override
 	public boolean canAdd(ItemStack itemstack){
 		if(itemstack.getItem() instanceof ItemBlock){
-			Block block = ((ItemBlock) itemstack.getItem()).getBlock();
-			return block.getLightValue(block.getDefaultState(), null, null) > 0;
+			Block block = ((ItemBlock) itemstack.getItem()).field_150939_a;
+			return block.getLightValue() > 0;
 		}
 		
 		return false;
@@ -24,7 +23,7 @@ public class LuminanceParameter implements IInfoboxParameter {
 
 	@Override
 	public String getParameterText(ItemStack itemstack){
-		Block block = ((ItemBlock) itemstack.getItem()).getBlock();
-		return Integer.toString(block.getLightValue(block.getDefaultState(), null, null));
+		Block block = ((ItemBlock) itemstack.getItem()).field_150939_a;
+		return Integer.toString(block.getLightValue());
 	}
 }

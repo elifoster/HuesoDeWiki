@@ -7,7 +7,7 @@ public class MiningLevelParameter implements IInfoboxParameter {
 	
 	@Override
 	public boolean canAdd(ItemStack itemstack){
-		return itemstack.getItem().getHarvestLevel(itemstack, "pickaxe", null, null) >= 0;
+		return itemstack.getItem().getHarvestLevel(itemstack, "pickaxe") >= 0;
 	}
 
 	@Override
@@ -17,6 +17,6 @@ public class MiningLevelParameter implements IInfoboxParameter {
 
 	@Override
 	public String getParameterText(ItemStack itemstack){
-		return Integer.toString(itemstack.getItem().getHarvestLevel(itemstack, "pickaxe", null, null));
+		return Integer.toString(itemstack.getItem().getHarvestLevel(itemstack, "pickaxe"));
 	}
 }

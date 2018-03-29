@@ -22,17 +22,6 @@ public class MiningSpeedParameter implements IInfoboxParameter {
 
 	@Override
 	public String getParameterText(ItemStack itemstack) {
-		try {
-			Field field = Utils.getField(ItemTool.class, "toolMaterial", "field_77862_b");
-			
-			if(field != null){
-				field.setAccessible(true);
-				return Utils.floatToString(((Item.ToolMaterial) field.get(itemstack.getItem())).getEfficiency());
-			}
-		}catch(IllegalArgumentException | IllegalAccessException e){
-			e.printStackTrace();
-		}
-		
-		return "?";
+		return Utils.floatToString(((ItemTool) itemstack.getItem()).func_150913_i().getEfficiencyOnProperMaterial());
 	}
 }
