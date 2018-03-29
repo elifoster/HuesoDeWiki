@@ -70,7 +70,8 @@ public class CraftingRecipe implements IWikiRecipe {
 		List<IRecipe> recipes = new ArrayList<>();
 		
 		((Iterable<IRecipe>)CraftingManager.getInstance().getRecipeList()).forEach((recipe) -> {
-			if(recipe.getRecipeOutput().isItemEqual(itemstack))
+			ItemStack out = recipe.getRecipeOutput();
+			if(out != null && out.isItemEqual(itemstack))
 				recipes.add(recipe);
 		});
 		
@@ -119,7 +120,7 @@ public class CraftingRecipe implements IWikiRecipe {
 						Field heightField = ShapedOreRecipe.class.getDeclaredField("height");
 						maxHeight = heightField.getInt(shapedrecipe);
 						Field widthField = ShapedOreRecipe.class.getDeclaredField("width");
-						maxWidth = heightField.getInt(shapedrecipe);
+						maxWidth = widthField.getInt(shapedrecipe);
 					}catch(NoSuchFieldException | IllegalAccessException e){
 						e.printStackTrace();
 					}
@@ -131,7 +132,6 @@ public class CraftingRecipe implements IWikiRecipe {
 							switch(h){
 							case 1:
 								component = shapedrecipe.getInput()[w - 1];
-								
 								break;
 							case 2:
 								component = shapedrecipe.getInput()[maxWidth + (w - 1)];
