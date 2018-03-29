@@ -24,17 +24,21 @@ import xbony2.huesodewiki.api.category.ICategory;
 
 public class CategoryCreator {
 	public static List<ICategory> categories = new ArrayList<>();
-	
+	private static final int HEAD_TYPE = 0;
+	private static final int CHEST_TYPE = 1;
+	private static final int LEGS_TYPE = 2;
+	private static final int BOOTS_TYPE = 3;
+
 	static {
 		categories.add(new ModCategory());
 		categories.add(new BasicInstanceOfCategory("Food", ItemFood.class));
 		categories.add(new BasicInstanceOfCategory("Music Discs", ItemRecord.class));
 		categories.add(new BasicInstanceOfCategory("Farming", ItemHoe.class));
 		categories.add(new BasicInstanceOfCategory("Shearing", ItemShears.class));
-		categories.add(new BasicCategory("Footwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == EntityEquipmentSlot.FEET));
-		categories.add(new BasicCategory("Legwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == EntityEquipmentSlot.LEGS));
-		categories.add(new BasicCategory("Chestwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == EntityEquipmentSlot.CHEST));
-		categories.add(new BasicCategory("Headwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == EntityEquipmentSlot.HEAD));
+		categories.add(new BasicCategory("Footwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == BOOTS_TYPE));
+		categories.add(new BasicCategory("Legwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == LEGS_TYPE));
+		categories.add(new BasicCategory("Chestwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == CHEST_TYPE));
+		categories.add(new BasicCategory("Headwear", (itemstack) -> itemstack.getItem() instanceof ItemArmor && ((ItemArmor)itemstack.getItem()).armorType == HEAD_TYPE));
 		categories.add(new BasicInstanceOfCategory("Felling", ItemAxe.class));
 		categories.add(new BasicInstanceOfCategory("Fishing", ItemFishingRod.class));
 		categories.add(new BasicInstanceOfCategory("Mining", ItemPickaxe.class));
