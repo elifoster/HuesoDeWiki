@@ -1,10 +1,10 @@
 package xbony2.huesodewiki.recipe.recipes;
 
 import static xbony2.huesodewiki.Utils.outputItem;
-import static xbony2.huesodewiki.Utils.outputIngredient;
 import static xbony2.huesodewiki.Utils.outputItemOutput;
 import static xbony2.huesodewiki.Utils.outputOreDictionaryEntry;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +14,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import xbony2.huesodewiki.api.IWikiRecipe;
@@ -68,7 +69,7 @@ public class CraftingRecipe implements IWikiRecipe {
 		StringBuilder ret = new StringBuilder();
 		List<IRecipe> recipes = new ArrayList<>();
 		
-		CraftingManager.REGISTRY.forEach((recipe) -> {
+		((Iterable<IRecipe>)CraftingManager.getInstance().getRecipeList()).forEach((recipe) -> {
 			if(recipe.getRecipeOutput().isItemEqual(itemstack))
 				recipes.add(recipe);
 		});
@@ -86,29 +87,21 @@ public class CraftingRecipe implements IWikiRecipe {
 					
 					for(int h = 1; h <= maxHeight; h++){
 						for(int w = 1; w <= maxWidth; w++){
-							Ingredient component = Ingredient.EMPTY;
-							
+							ItemStack component = null;
 							switch(h){
 							case 1:
-								component = shapedrecipe.recipeItems.get(w - 1);
+								component = shapedrecipe.recipeItems[w - 1];
 								break;
 							case 2:
-								component = shapedrecipe.recipeItems.get(maxWidth + (w - 1));
+								component = shapedrecipe.recipeItems[maxWidth + (w - 1)];
 								break;
 							case 3:
-								component = shapedrecipe.recipeItems.get((maxWidth * 2) + (w - 1));
+								component = shapedrecipe.recipeItems[(maxWidth * 2) + (w - 1)];
 								break;
 							}
 							
-							if(component != Ingredient.EMPTY)
-								if(!(component instanceof OreIngredient)) //Forge injects Vanilla
-									ret.append('|').append(getShapedLocation(h, w)).append('=').append(outputIngredient(component)).append('\n');
-								else{
-									String entry = outputOreDictionaryEntry(component.getMatchingStacks());
-								
-									if(entry != null)
-										ret.append('|').append(getShapedLocation(h, w)).append('=').append(entry).append('\n');
-							}
+							if(component != null)
+								ret.append('|').append(getShapedLocation(h, w)).append('=').append(outputItem(component)).append('\n');
 						}
 					}
 					
@@ -120,36 +113,39 @@ public class CraftingRecipe implements IWikiRecipe {
 				}else if(recipe instanceof ShapedOreRecipe){
 					ShapedOreRecipe shapedrecipe = (ShapedOreRecipe)recipe;
 					ret.append("{{Cg/Crafting Table\n");
-					
-					int maxHeight = shapedrecipe.getRecipeHeight();
-					int maxWidth = shapedrecipe.getRecipeWidth();
+					int maxHeight = 3;
+					int maxWidth = 3;
+					try{
+						Field heightField = ShapedOreRecipe.class.getDeclaredField("height");
+						maxHeight = heightField.getInt(shapedrecipe);
+						Field widthField = ShapedOreRecipe.class.getDeclaredField("width");
+						maxWidth = heightField.getInt(shapedrecipe);
+					}catch(NoSuchFieldException | IllegalAccessException e){
+						e.printStackTrace();
+					}
 					
 					for(int h = 1; h <= maxHeight; h++){
 						for(int w = 1; w <= maxWidth; w++){
-							Ingredient component = Ingredient.EMPTY;
+							Object component = null;
 							
 							switch(h){
 							case 1:
-								component = shapedrecipe.getIngredients().get(w - 1);
+								component = shapedrecipe.getInput()[w - 1];
 								
 								break;
 							case 2:
-								component = shapedrecipe.getIngredients().get(maxWidth + (w - 1));
+								component = shapedrecipe.getInput()[maxWidth + (w - 1)];
 								break;
 							case 3:
-								component = shapedrecipe.getIngredients().get((maxWidth * 2) + (w - 1));
+								component = shapedrecipe.getInput()[(maxWidth * 2) + (w - 1)];
 								break;
 							}
 							
-							if(component != Ingredient.EMPTY)
-								if(!(component instanceof OreIngredient))
-									ret.append('|').append(getShapedLocation(h, w)).append('=').append(outputIngredient(component)).append('\n');
-								else{
-									String entry = outputOreDictionaryEntry(component.getMatchingStacks());
-								
-									if(entry != null)
-										ret.append('|').append(getShapedLocation(h, w)).append('=').append(entry).append('\n');
-								}
+							if(component != null)
+								if(component instanceof String)
+									ret.append('|').append(getShapedLocation(h, w)).append('=').append(outputOreDictionaryEntry(((ItemStack[])OreDictionary.getOres((String)component).toArray()))).append('\n');
+								else if(component instanceof ItemStack)
+									ret.append('|').append(getShapedLocation(h, w)).append('=').append(outputItem((ItemStack)component)).append('\n');
 						}
 					}
 					
@@ -162,20 +158,13 @@ public class CraftingRecipe implements IWikiRecipe {
 					ShapelessRecipes shapelessrecipe = (ShapelessRecipes)recipe;
 					ret.append("{{Cg/Crafting Table\n");
 					
-					List<Ingredient> recipeItems = shapelessrecipe.recipeItems;
+					List<ItemStack> recipeItems = shapelessrecipe.recipeItems;
 					
 					for(int i = 0; i < recipeItems.size(); i++){
-						Ingredient component = recipeItems.get(i);
+						ItemStack component = recipeItems.get(i);
 						
-						if(component != Ingredient.EMPTY)
-							if(!(component instanceof OreIngredient))
-								ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(outputIngredient(component)).append('\n');
-							else{
-								String entry = outputOreDictionaryEntry(component.getMatchingStacks());
-								
-								if(entry != null)
-									ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(entry).append('\n');
-							}
+						if(component != null)
+							ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(outputItem(component)).append('\n');
 					}
 					
 					ret.append("|O=").append(outputItemOutput(shapelessrecipe.getRecipeOutput())).append('\n');
@@ -188,16 +177,16 @@ public class CraftingRecipe implements IWikiRecipe {
 					ShapelessOreRecipe shapelessrecipe = (ShapelessOreRecipe)recipe;
 					ret.append("{{Cg/Crafting Table\n");
 					
-					List<Ingredient> recipeItems = shapelessrecipe.getIngredients();
+					List<Object> recipeItems = shapelessrecipe.getInput();
 					
 					for(int i = 0; i < recipeItems.size(); i++){
-						Ingredient component = recipeItems.get(i);
+						Object component = recipeItems.get(i);
 						
-						if(component != Ingredient.EMPTY)
-							if(!(component instanceof OreIngredient))
-								ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(outputIngredient(component)).append('\n');
-							else{
-								String entry = outputOreDictionaryEntry(component.getMatchingStacks());
+						if(component != null)
+							if(component instanceof ItemStack)
+								ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(outputItem((ItemStack)component)).append('\n');
+							else if(component instanceof String){
+								String entry = outputOreDictionaryEntry(((ItemStack[])OreDictionary.getOres((String)component).toArray()));
 							
 								if(entry != null)
 									ret.append('|').append(getShapelessLocation(i, recipeItems.size())).append('=').append(entry).append('\n');

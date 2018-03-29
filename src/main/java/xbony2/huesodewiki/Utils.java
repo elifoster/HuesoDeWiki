@@ -48,16 +48,6 @@ public class Utils {
 		return "{{Gc|mod=" + getModAbbrevation(itemstack) + "|dis=false|" + itemstack.getDisplayName() + "}}";
 	}
 	
-	public static String outputIngredient(Ingredient ingredient){
-		StringBuilder ret = new StringBuilder();
-		
-		for(ItemStack itemstack : ingredient.getMatchingStacks()){
-			ret.append(outputItem(itemstack));
-		}
-		
-		return ret.toString();
-	}
-	
 	public static String outputItemOutput(ItemStack itemstack){
 		return "{{Gc|mod=" + getModAbbrevation(itemstack) + "|link=none|" + itemstack.getDisplayName() + (itemstack.stackSize != 1 ? "|" + itemstack.stackSize : "") + "}}";
 	}

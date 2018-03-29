@@ -13,8 +13,8 @@ public class FurnaceRecipe implements IWikiRecipe {
 	@Override
 	public String getRecipes(ItemStack itemstack){
 		List<ItemStack> inputs = new ArrayList<>();
-		
-		FurnaceRecipes.instance().getSmeltingList().entrySet().forEach((entry) -> {
+
+		((Iterable<Map.Entry<ItemStack, ItemStack>>)FurnaceRecipes.smelting().getSmeltingList().entrySet()).forEach((entry) -> {
 			ItemStack output = entry.getValue();
 			
 			if(output.isItemEqual(itemstack))
