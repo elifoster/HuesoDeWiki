@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -47,7 +48,7 @@ public class HuesoDeWiki {
 		ClientRegistry.registerKeyBinding(copyPageKey);
 		copyNameKey = new KeyBinding("key.copyname", Keyboard.KEY_APOSTROPHE, "key.categories.huesodewiki");
 		ClientRegistry.registerKeyBinding(copyNameKey);
-		MinecraftForge.EVENT_BUS.register(new RenderTickEventEventHanlder());
+		FMLCommonHandler.instance().bus().register(new RenderTickEventEventHanlder());
 		
 		Configuration config = new Configuration(new File(event.getModConfigurationDirectory(), "HuesoDeWiki.cfg"));
 		config.load();
@@ -67,7 +68,7 @@ public class HuesoDeWiki {
 		Compat.preInit();
 	}
 	
-	private class RenderTickEventEventHanlder {
+	public class RenderTickEventEventHanlder {
 		@SubscribeEvent
 		public void renderTickEvent(TickEvent.RenderTickEvent event){
 			if(event.phase == TickEvent.Phase.START){
